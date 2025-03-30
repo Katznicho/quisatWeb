@@ -8,25 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('school_admins', function (Blueprint $table) {
+        Schema::create('teachers', function (Blueprint $table) {
             $table->id();
-            //foreign key
-            $table->unsignedBigInteger('school_id');
-            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
+            $table->string('staff_id')->unique();
             $table->string('first_name');
-            $table->string('middle_name')->nullable();
             $table->string('last_name');
+            $table->enum('gender', ['male', 'female']);
+            $table->date('date_of_birth');
             $table->string('email')->unique();
-            $table->string('password');
             $table->string('phone');
-            $table->enum('role', [
-                'principal',
-                'vice_principal',
-                'coordinator',
-                'administrator'
-            ]);
-            $table->date('join_date');
+            $table->string('emergency_contact');
             $table->text('address')->nullable();
+            $table->string('qualification');
+            $table->date('join_date');
+            $table->foreignId('class_id')->nullable()->constrained('school_classes')->nullOnDelete();
+            $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
@@ -34,6 +30,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('school_admins');
+        Schema::dropIfExists('teachers');
     }
 };
