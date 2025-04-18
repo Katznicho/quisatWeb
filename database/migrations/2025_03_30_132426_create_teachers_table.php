@@ -15,13 +15,14 @@ return new class extends Migration
             $table->string('last_name');
             $table->enum('gender', ['male', 'female']);
             $table->date('date_of_birth');
+            $table->string("profile_image")->nullable();
+            $table->string("national_id")->nullable();
             $table->string('email')->unique();
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->string('emergency_contact');
             $table->text('address')->nullable();
             $table->string('qualification');
             $table->date('join_date');
-            $table->foreignId('class_id')->nullable()->constrained('school_classes')->nullOnDelete();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();

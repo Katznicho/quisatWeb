@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubjectResource extends Resource
 {
@@ -21,6 +22,8 @@ class SubjectResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                ->default(auth()->user()->school_id),
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
@@ -29,14 +32,6 @@ class SubjectResource extends Resource
                         Forms\Components\TextInput::make('code')
                             ->required()
                             ->unique(ignoreRecord: true),
-                        Forms\Components\Select::make('teacher_id')
-                            ->relationship('teacher', 'first_name')
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\Select::make('class_id')
-                            ->relationship('class', 'name')
-                            ->required()
-                            ->searchable(),
                         Forms\Components\Textarea::make('description')
                             ->rows(3),
                         Forms\Components\Select::make('status')
@@ -58,12 +53,6 @@ class SubjectResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('teacher.first_name')
-                    ->label('Teacher')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('class.name')
-                    ->label('Class')
-                    ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'success' => 'active',
@@ -100,5 +89,11 @@ class SubjectResource extends Resource
             'create' => Pages\CreateSubject::route('/create'),
             'edit' => Pages\EditSubject::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('school_id', auth()->user()->school_id);
     }
 }

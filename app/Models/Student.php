@@ -10,8 +10,8 @@ class Student extends Model
 {
     protected $fillable = [
         'school_id',
-        'class_id',
-        'parent_id',
+        'school_class_id',
+        'guardian_id',
         'admission_number',
         'first_name',
         'last_name',
@@ -23,28 +23,25 @@ class Student extends Model
         'status',
     ];
 
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
-    }
+   
 
     public function class(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
-    public function attendances(): HasMany
+    public function schoolClass(): BelongsTo
     {
-        return $this->hasMany(Attendance::class);
+        return $this->belongsTo(SchoolClass::class, 'school_class_id');
     }
 
-    public function grades(): HasMany
+    public function guardian(): BelongsTo
     {
-        return $this->hasMany(Grade::class);
+        return $this->belongsTo(Guardian::class);
     }
 
-    public function parent(): BelongsTo
+    public function school(): BelongsTo
     {
-        return $this->belongsTo(Parent::class);
+        return $this->belongsTo(School::class);
     }
 }

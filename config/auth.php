@@ -40,34 +40,36 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
+        'guardian' => [
+            'driver' => 'sanctum',
+            'provider' => 'guardians',
+        ],
+        'business' => [
+            'driver' => 'sanctum',
+            'provider' => 'business_admins',
+        ],
         'school' => [
             'driver' => 'session',
             'provider' => 'school_admins',
         ],
+        'school-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'school_admins',
+        ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    |
-    | All authentication guards have a user provider, which defines how the
-    | users are actually retrieved out of your database or other storage
-    | system used by the application. Typically, Eloquent is utilized.
-    |
-    | If you have multiple user tables or models you may configure multiple
-    | providers to represent the model / table. These providers may then
-    | be assigned to any extra authentication guards you have defined.
-    |
-    | Supported: "database", "eloquent"
-    |
-    */
 
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
+        ],
+        'guardians' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Guardian::class,
+        ],
+        'business_admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\BusinessAdmin::class,
         ],
         'school_admins' => [
             'driver' => 'eloquent',

@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentResource extends Resource
 {
@@ -22,6 +23,20 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                    ->default(auth()->user()->school_id),
+                    
+                Forms\Components\Section::make('Profile Image')
+                    ->schema([
+                        Forms\Components\FileUpload::make('profile_image')
+                            ->image()
+                            ->imageEditor()
+                            ->circleCropper()
+                            ->directory('student-profiles')
+                            ->maxSize(5120)
+                            ->helperText('Recommended size: 300x300px (Max: 5MB)')
+                    ])->columnSpanFull(),
+
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
                         Forms\Components\TextInput::make('admission_number')
@@ -54,24 +69,24 @@ class StudentResource extends Resource
 
                 Forms\Components\Section::make('Academic Information')
                     ->schema([
-                        Forms\Components\Select::make('class_id')
-                            ->relationship('class', 'name')
+                        Forms\Components\Select::make('school_class_id')  // Changed from class_id
+                            ->relationship(
+                                'schoolClass',  // Changed relationship name
+                                'name',
+                                fn (Builder $query) => $query->where('school_id', auth()->user()->school_id)
+                            )
                             ->required()
+                            ->preload()
                             ->searchable(),
                         Forms\Components\Select::make('guardian_id')
-                            ->relationship('guardian', 'first_name')
-                            ->searchable()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('first_name')
-                                    ->required(),
-                                Forms\Components\TextInput::make('last_name')
-                                    ->required(),
-                                Forms\Components\TextInput::make('email')
-                                    ->email()
-                                    ->required(),
-                                Forms\Components\TextInput::make('phone')
-                                    ->required(),
-                            ]),
+                            ->relationship(
+                                'guardian', 
+                                'first_name', 
+                                fn (Builder $query) => $query->where('school_id', auth()->user()->school_id)
+                            )
+                            ->getOptionLabelFromRecordUsing(fn (Guardian $record) => "{$record->first_name} {$record->last_name}")
+                            ->preload()
+                            ->searchable(),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'active' => 'Active',
@@ -87,13 +102,16 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('profile_image')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('admission_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('first_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('class.name')
+                Tables\Columns\TextColumn::make('schoolClass.name')
+                    ->label('Class')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('guardian.first_name')
                     ->label('Guardian'),
@@ -141,5 +159,11 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('school_id', auth()->user()->school_id);
     }
 }

@@ -13,9 +13,7 @@ return new class extends Migration
             //foreign key
             $table->unsignedBigInteger('school_id');
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('last_name');
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone');
@@ -25,7 +23,7 @@ return new class extends Migration
                 'coordinator',
                 'administrator'
             ]);
-            $table->date('join_date');
+            $table->date('join_date')->nullable();
             $table->text('address')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();

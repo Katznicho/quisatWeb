@@ -51,6 +51,10 @@ class SchoolPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/School/Widgets'), for: 'App\\Filament\\School\\Widgets')
+            ->widgets([
+                Widgets\AccountWidget::class,
+                \App\Filament\School\Widgets\SchoolStatsWidget::class,
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

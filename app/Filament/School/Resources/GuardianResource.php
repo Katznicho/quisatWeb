@@ -22,6 +22,8 @@ class GuardianResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                ->default(auth()->user()->school_id),
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
                         Forms\Components\TextInput::make('first_name')
@@ -33,8 +35,16 @@ class GuardianResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('phone')
-                            ->required(),
-                        Forms\Components\TextInput::make('alternate_phone'),
+                            ->required()
+                            ->tel()
+                            ->prefix('+256')
+                            ->mask('999999999')
+                            ->placeholder('7XXXXXXXX'),
+                        Forms\Components\TextInput::make('alternate_phone')
+                            ->tel()
+                            ->prefix('+256')
+                            ->mask('999999999')
+                            ->placeholder('7XXXXXXXX'),
                         Forms\Components\TextInput::make('occupation'),
                     ])->columns(2),
 
@@ -70,7 +80,11 @@ class GuardianResource extends Resource
                 Forms\Components\Section::make('Emergency Contact')
                     ->schema([
                         Forms\Components\TextInput::make('emergency_contact_name'),
-                        Forms\Components\TextInput::make('emergency_contact_phone'),
+                        Forms\Components\TextInput::make('emergency_contact_phone')
+                            ->tel()
+                            ->prefix('+256')
+                            ->mask('999999999')
+                            ->placeholder('7XXXXXXXX'),
                         Forms\Components\TextInput::make('emergency_contact_relationship'),
                         Forms\Components\Textarea::make('additional_notes')
                             ->rows(3),

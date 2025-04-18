@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Business extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'email',
@@ -20,9 +23,4 @@ class Business extends Model
         'business_type',
         'status',
     ];
-
-    public function businessAdmin()
-    {
-        return $this->hasOne(BusinessAdmin::class);
-    }
 }

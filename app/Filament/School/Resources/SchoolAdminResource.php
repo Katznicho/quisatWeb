@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolAdminResource extends Resource
 {
@@ -17,15 +18,21 @@ class SchoolAdminResource extends Resource
     protected static ?string $navigationGroup = 'School Management';
     protected static ?int $navigationSort = 1;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('school_id', auth()->user()->school_id);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                    ->default(auth()->user()->school_id),
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
-                        Forms\Components\TextInput::make('first_name')
-                            ->required(),
-                        Forms\Components\TextInput::make('last_name')
+                        Forms\Components\TextInput::make('name')
                             ->required(),
                         Forms\Components\TextInput::make('email')
                             ->email()
@@ -69,9 +76,7 @@ class SchoolAdminResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
+                Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),

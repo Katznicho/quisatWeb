@@ -21,7 +21,7 @@
             <div class="hidden md:flex items-center space-x-8">
                 <a href="#features" class="text-gray-600 hover:text-[#00295F]">Features</a>
                 <a href="#business" class="text-gray-600 hover:text-[#00295F]">Business</a>
-                <a href="#schools" class="text-gray-600 hover:text-[#00295F]">Schools</a>
+                <a href="/school" class="text-gray-600 hover:text-[#00295F]">Schools</a>
                 <a href="#parents" class="text-gray-600 hover:text-[#00295F]">Parents</a>
             </div>
 
@@ -29,9 +29,9 @@
                 @auth
                     <a href="#" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90">Dashboard</a>
                 @else
-                    <a href="#" class="text-gray-600 hover:text-[#00295F]">Login</a>
+                    <a href="/admin" class="text-gray-600 hover:text-[#00295F]">Login</a>
                     @if (Route::has('register'))
-                        <a href="#" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90">Get Started</a>
+                        <a href="/school" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90">Get Started</a>
                     @endif
                 @endauth
             </div>
@@ -47,9 +47,9 @@
                 @auth
                     <a href="#" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90 text-center">Dashboard</a>
                 @else
-                    <a href="#" class="text-gray-600 hover:text-[#00295F] text-center">Login</a>
+                    <a href="/school" class="text-gray-600 hover:text-[#00295F] text-center">Login</a>
                     @if (Route::has('register'))
-                        <a href="#" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90 text-center">Get Started</a>
+                        <a href="/school" class="bg-[#00295F] text-white px-6 py-2 rounded-md hover:bg-[#00295F]/90 text-center">Get Started</a>
                     @endif
                 @endauth
             </div>

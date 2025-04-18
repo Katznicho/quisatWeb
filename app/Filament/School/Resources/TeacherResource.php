@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TeacherResource extends Resource
 {
@@ -21,15 +22,33 @@ class TeacherResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                    ->default(auth()->user()->school_id),
+
+                Forms\Components\Section::make('Profile Image')
+                    ->schema([
+                        Forms\Components\FileUpload::make('profile_image')
+                            ->image()
+                            ->imageEditor()
+                            ->circleCropper()
+                            ->directory('teacher-profiles')
+                            ->maxSize(5120)
+                            ->helperText('Recommended size: 300x300px (Max: 5MB)')
+                    ])->columnSpanFull(),
+
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
                         Forms\Components\TextInput::make('staff_id')
                             ->required()
-                            ->unique(ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->placeholder('Enter staff ID'),
                         Forms\Components\TextInput::make('first_name')
                             ->required(),
                         Forms\Components\TextInput::make('last_name')
                             ->required(),
+                        Forms\Components\TextInput::make('national_id')
+                            ->required()
+                            ->unique(ignoreRecord: true),
                         Forms\Components\Select::make('gender')
                             ->options([
                                 'male' => 'Male',
@@ -38,7 +57,7 @@ class TeacherResource extends Resource
                             ->required(),
                         Forms\Components\DatePicker::make('date_of_birth')
                             ->required()
-                            ->maxDate(now()),
+                            ->maxDate(now()->subYears(18)),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Contact Information')
@@ -48,9 +67,17 @@ class TeacherResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('phone')
-                            ->required(),
+                            ->required()
+                            ->tel()
+                            ->prefix('+256')
+                            ->mask('999999999')
+                            ->placeholder('7XXXXXXXX'),
                         Forms\Components\TextInput::make('emergency_contact')
-                            ->required(),
+                            ->required()
+                            ->tel()
+                            ->prefix('+256')
+                            ->mask('999999999')
+                            ->placeholder('7XXXXXXXX'),
                         Forms\Components\Textarea::make('address')
                             ->rows(3),
                     ])->columns(2),
@@ -60,11 +87,8 @@ class TeacherResource extends Resource
                         Forms\Components\TextInput::make('qualification')
                             ->required(),
                         Forms\Components\DatePicker::make('join_date')
-                            ->required(),
-                        Forms\Components\Select::make('class_id')
-                            ->relationship('class', 'name')
-                            ->label('Homeroom Class')
-                            ->searchable(),
+                            ->required()
+                            ->maxDate(now()),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'active' => 'Active',
@@ -127,5 +151,11 @@ class TeacherResource extends Resource
             'create' => Pages\CreateTeacher::route('/create'),
             'edit' => Pages\EditTeacher::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('school_id', auth()->user()->school_id);
     }
 }

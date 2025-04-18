@@ -19,9 +19,10 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('location');
+            $table->string('type');
             $table->string('image')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
-            $table->string('slug')->unique();
+            $table->string('status');
+            // $table->string('slug')->unique();
             $table->timestamps();
         });
     }

@@ -16,11 +16,13 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->date('date_of_birth');
             $table->string('email')->unique()->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->nullable();
+            $table->string("profile_image")->nullable();
+            $table->string("national_id")->nullable(); // Add "national_id
             $table->text('address')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->foreignId('school_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('class_id')->constrained('school_classes')->cascadeOnDelete();
+            $table->foreignId('school_class_id')->constrained('school_classes')->cascadeOnDelete();
             $table->foreignId('guardian_id')->constrained('guardians')->cascadeOnDelete();
             $table->timestamps(); // Add timestamps
         });

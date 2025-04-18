@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
-class Guardian extends Model
+class Guardian extends Authenticatable
 {
+    use HasApiTokens, Notifiable;
+
     protected $fillable = [
         'school_id',
         'first_name',
@@ -21,6 +26,12 @@ class Guardian extends Model
         'postal_code',
         'relationship',
         'status',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     public function students(): HasMany

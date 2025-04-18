@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SchoolClassResource extends Resource
 {
@@ -21,12 +22,14 @@ class SchoolClassResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('school_id')
+                ->default(auth()->user()->school_id),
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('room_number')
+                        Forms\Components\TextInput::make('description')
                             ->required(),
                         Forms\Components\Select::make('status')
                             ->options([
@@ -45,7 +48,7 @@ class SchoolClassResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('room_number')
+                Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('students_count')
                     ->counts('students')
@@ -74,6 +77,8 @@ class SchoolClassResource extends Resource
             ]);
     }
 
+    
+
     public static function getPages(): array
     {
         return [
@@ -81,5 +86,11 @@ class SchoolClassResource extends Resource
             'create' => Pages\CreateSchoolClass::route('/create'),
             'edit' => Pages\EditSchoolClass::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('school_id', auth()->user()->school_id);
     }
 }

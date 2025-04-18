@@ -16,7 +16,7 @@ class Event extends Model
         'location',
         'type', // academic, sports, cultural, holiday
         'status',
-        'banner'
+        'image'
     ];
 
     protected $casts = [

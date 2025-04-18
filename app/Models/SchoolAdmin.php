@@ -5,13 +5,16 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
 
 class SchoolAdmin extends Authenticatable implements FilamentUser
 {
+    use HasFactory, HasApiTokens;
     protected $fillable = [
         'school_id',
-        'first_name',
-        'last_name',
+        'name',
+        'name',
         'email',
         'password',
         'phone',
@@ -20,6 +23,7 @@ class SchoolAdmin extends Authenticatable implements FilamentUser
         'address',
         'status',
     ];
+    
 
     protected $hidden = [
         'password',

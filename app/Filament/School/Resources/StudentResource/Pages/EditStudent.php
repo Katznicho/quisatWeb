@@ -3,17 +3,23 @@
 namespace App\Filament\School\Resources\StudentResource\Pages;
 
 use App\Filament\School\Resources\StudentResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Notifications\Notification;
 
 class EditStudent extends EditRecord
 {
     protected static string $resource = StudentResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getRedirectUrl(): string
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Student updated')
+            ->body('The student has been updated successfully.');
     }
 }
